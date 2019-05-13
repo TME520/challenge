@@ -1,0 +1,21 @@
+minikube start
+minikube addons enable metrics-server
+
+docker build -t ubuntubase .
+docker build . -t ubuntubase
+docker images
+
+docker run -it ubuntubase
+
+docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:<minikube-ip> candidate-image init d0x2f/http-hello-world:v1.0.0
+docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:<minikube-ip> candidate-image upgrade d0x2f/http-hello-world:v2.0.0
+
+docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:192.168.99.101 ubuntubase init d0x2f/http-hello-world:v1.0.0
+
+# docker run -v <volume to bind/mount>
+# Mount ~/.minikube (mac) as /root/.minikube (container)
+
+# Add entries to container hosts file (--add-host)
+
+# Run a command in a new container
+# docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
