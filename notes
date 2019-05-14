@@ -23,3 +23,11 @@ docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:192.168.99.101 u
 docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:192.168.99.101 ubuntubase init
 docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:192.168.99.101 ubuntubase init d0x2f/http-hello-world:v1.0.0
 docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:192.168.99.101 ubuntubase upgrade d0x2f/http-hello-world:v2.0.0
+
+docker run -p 8080:8080 -d d0x2f/http-hello-world:v1.0.0
+curl 127.0.0.1:8080
+docker stop 26e69719c7d4
+
+kubectl run hello-world --port=8080 --image=d0x2f/http-hello-world:v1.0.0 --generator=run-pod/v1
+kubectl get pods
+minikube dashboard ### Wait for a while, dashboard opens in browser
