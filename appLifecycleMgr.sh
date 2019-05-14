@@ -4,10 +4,14 @@ echo "DERPING "$@ > /root/.minikube/tamere
 echo "Arguments are "$@
 echo "Disks are"
 df -h
-echo "Adding user deploy"
-useradd -d /deploy_home/ -m -s /bin/bash deploy
-id deploy >> /root/.minikube/tamere
+#echo "Adding user deploy"
+#useradd -d /deploy_home/ -m -s /bin/bash deploy
+#id deploy >> /root/.minikube/tamere
 cat /root/.minikube/tamere
+echo "Copying minikube config"
+mkdir /.minikube_copy
+cp -pr /root/.minikube/* /.minikube_copy/
+ls /.minikube_copy/
 echo "Creating kube config"
 mkdir -p $HOME/.kube/
 mv /config $HOME/.kube/

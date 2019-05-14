@@ -1,8 +1,8 @@
 apiVersion: v1
 clusters:
-- cluster:
-    certificate-authority: /Users/tme520/.minikube/ca.crt
-    server: https://192.168.99.101:8443
+- cluster:   
+    insecure-skip-tls-verify: true
+    server: https://AAAAAAAA:51928
   name: minikube
 contexts:
 - context:
@@ -15,5 +15,5 @@ preferences: {}
 users:
 - name: minikube
   user:
-    client-certificate: /Users/tme520/.minikube/client.crt
-    client-key: /Users/tme520/.minikube/client.key
+    client-certificate: /minikube_copy/client.crt
+    client-key: /minikube_copy/client.key
