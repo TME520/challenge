@@ -31,3 +31,10 @@ docker stop 26e69719c7d4
 kubectl run hello-world --port=8080 --image=d0x2f/http-hello-world:v1.0.0 --generator=run-pod/v1
 kubectl get pods
 minikube dashboard ### Wait for a while, dashboard opens in browser
+
+
+===
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+RUN echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+RUN sudo apt-get update
+RUN apt-get install -y kubectl
