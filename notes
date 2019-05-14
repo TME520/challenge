@@ -1,5 +1,6 @@
 minikube start
 minikube addons enable metrics-server
+minikube status
 
 docker build -t ubuntubase .
 docker build . -t ubuntubase
