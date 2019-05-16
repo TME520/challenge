@@ -32,6 +32,8 @@ kubectl run hello-world --port=8080 --image=d0x2f/http-hello-world:v1.0.0 --gene
 kubectl get pods
 minikube dashboard ### Wait for a while, dashboard opens in browser
 
+kubectl apply -f ./deployment.yaml
+
 
 ===
 /Users/tme520/.kube/config
