@@ -101,16 +101,20 @@ kubectl delete horizontalpodautoscalers.autoscaling hello-world
 ===
 kubectl apply -f ./hello-world-deployment.yaml
 kubectl apply -f ./hello-world-service.yaml
+# kubectl apply -f ./hello-world-hpa.yaml
 kubectl autoscale deployment hello-world-deployment --min=2 --max=4 --cpu-percent=60
+kubectl get hpa
 kubectl get deploy -o wide
 kubectl get svc -o wide
 kubectl get pod -o wide
 minikube ssh
 curl http://xxx.xxx.xxx.xxx:8080
 kubectl set image deployment hello-world-deployment hello-world=d0x2f/http-hello-world:v2.0.0
+kubectl rollout status deployment hello-world-deployment
+# kubectl rollout undo deployment hello-world-deployment
 kubectl get pods -o wide
 minikube ssh
 curl http://xxx.xxx.xxx.xxx:8080
-kubectl delete svc hello-world
 kubectl delete deployment hello-world-deployment
+kubectl delete svc hello-world-service
 kubectl delete horizontalpodautoscalers.autoscaling hello-world-deployment
