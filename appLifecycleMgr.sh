@@ -1,22 +1,14 @@
 #! /bin/bash
 
-echo "DERPING "$@ > /root/.minikube/tamere
-echo "Arguments are "$@
-#echo "Disks are"
-#df -h
-#echo "Adding user deploy"
-#useradd -d /deploy_home/ -m -s /bin/bash deploy
-#id deploy >> /root/.minikube/tamere
-#cat /root/.minikube/tamere
-echo "Copying minikube config"
+echo -e "\e[32m[INFO]\e[om Starting Application Lifecycle Manager"
+echo "[INFO] Arguments are "$@
+echo "[INFO] Copying minikube config"
 mkdir /minikube_copy
 cp -pr /root/.minikube/* /minikube_copy/
-ls /minikube_copy/
-echo "Creating kube config"
+echo "[INFO] Creating kube config"
 mkdir -p $HOME/.kube/
 mv /config $HOME/.kube/
 sed -i -e 's/AAAAAAAA/kubernetes/g' $HOME/.kube/config
-cat $HOME/.kube/config
 #echo "Pinging kub"
 #ping -c 3 kubernetes
 #nc -zvvvt kubernetes 8443
