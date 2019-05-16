@@ -33,7 +33,19 @@ kubectl get pods
 minikube dashboard ### Wait for a while, dashboard opens in browser
 
 kubectl apply -f ./deployment.yaml
-
-
+kubectl autoscale deployment hello-world-deployment --min=2 --max=4 --cpu-percent=60
+kubectl delete deployment hello-world
 ===
-/Users/tme520/.kube/config
+kubectl run hello-world --image=d0x2f/http-hello-world:v1.0.0 --requests=cpu=200m --expose --port=30101
+OR: kubectl apply -f ./deployment.yaml
+kubectl autoscale deployment hello-world --cpu-percent=60 --min=2 --max=4
+kubectl port-forward deployment/hello-world 8080:30101
+kubectl run -i --tty load-generator --image=busybox /bin/sh
+while true; do wget -q -O- http://hello-world.default.svc.cluster.local; done
+kubectl get deployment hello-world
+kubectl get rs
+kubectl get hpa
+kubectl delete deployment load-generator
+kubectl get deployment hello-world
+kubectl get rs
+===
