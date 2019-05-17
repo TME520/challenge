@@ -7,5 +7,5 @@ spec:
     app: hello-world
   ports:
   - protocol: TCP
-    port: 8080
-    targetPort: 30101
+    port: 30101
+    targetPort: 8080

@@ -26,9 +26,9 @@ function init_env() {
 }
 
 function init_deployment() {
-    echo -e "\e[32m[INFO]\e[0m Initial deployment for Hello World"
+    echo -e "\e[32m[INFO]\e[0m Initial deployment for Hello World "$1
     echo -e "\e[32m[INFO]\e[0m Creating deployment YAML file"
-    sed -i -e "s/BBBBBBBB/$1/g" /hello-world-deployment.yaml
+    sed -i -e 's|BBBBBBBB|'"$1"'|g' /hello-world-deployment.yaml
     echo -e "\e[32m[INFO]\e[0m Deploying the app"
     kubectl apply -f /hello-world-deployment.yaml
     if [ $? -gt 0 ] ; then
@@ -42,8 +42,9 @@ function init_deployment() {
     if [ $? -gt 0 ] ; then
         echo -e "\e[31m[ERROR]\e[0m Failed to create autoscaler. We stop here." && cleanup_the_mess && exit 1
     fi
+    sleep 3
     echo -e "\e[32m[INFO]\e[0m Listing endpoints, hpa, deploy, service and pods"
-    sleep 4
+    sleep 3
     kubectl get endpoints
     kubectl get hpa
     kubectl get deploy -o wide
@@ -64,8 +65,9 @@ function upgrade_deployment() {
     if [ $? -gt 0 ] ; then
         echo -e "\e[31m[ERROR]\e[0m Deployment rollout failed. We rollback, then we stop." && kubectl rollout undo deployment hello-world-deployment && exit 1
     fi
+    sleep 3
     echo -e "\e[32m[INFO]\e[0m Listing endpoints, hpa, deploy, service and pods"
-    sleep 4
+    sleep 3
     kubectl get endpoints
     kubectl get hpa
     kubectl get deploy -o wide
