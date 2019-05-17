@@ -25,7 +25,7 @@ docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:<minikube-ip> ca
 ```
 ## Checks
 ### cURL it
-- Keep not of the service's IP (the one in front of `hello-world-service`):
+- Keep note of the service's IP (the one in front of `hello-world-service`):
 ```
 kubectl get svc
 ```
