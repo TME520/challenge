@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: hello-world
-        image: d0x2f/http-hello-world:v1.0.0
+        image: BBBBBBBB
         ports:
         - containerPort: 30101

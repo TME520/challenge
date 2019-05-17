@@ -27,10 +27,21 @@ function init_env() {
 
 function init_deployment() {
     echo -e "\e[32m[INFO]\e[0m Initial deployment for Hello World"
+    echo -e "\e[32m[INFO]\e[0m Creating deployment YAML file"
+    sed -i -e 's/BBBBBBBB/$1/g' /hello-world-deployment.yaml
     echo -e "\e[32m[INFO]\e[0m Deploying the app"
     kubectl apply -f /hello-world-deployment.yaml
+    if [ $? -gt 0 ] ; then
+        echo -e "\e[31m[ERROR]\e[0m Failed to create deployment. We stop here." && exit 1
+    fi
     kubectl apply -f /hello-world-service.yaml
+    if [ $? -gt 0 ] ; then
+        echo -e "\e[31m[ERROR]\e[0m Failed to create service. We stop here." && exit 1
+    fi
     kubectl autoscale deployment hello-world-deployment --min=2 --max=4 --cpu-percent=60
+    if [ $? -gt 0 ] ; then
+        echo -e "\e[31m[ERROR]\e[0m Failed to create autoscaler. We stop here." && exit 1
+    fi
     echo -e "\e[32m[INFO]\e[0m Listing endpoints, hpa, deploy, service and pods"
     kubectl get endpoints
     kubectl get hpa
@@ -45,7 +56,13 @@ function upgrade_deployment() {
     echo -e "\e[32m[INFO]\e[0m Upgrading deployment for Hello World"
     echo -e "\e[32m[INFO]\e[0m Upgrading to \e[36m"$1"\e[0m"
     kubectl set image deployment hello-world-deployment hello-world=$1
+    if [ $? -gt 0 ] ; then
+        echo -e "\e[31m[ERROR]\e[0m Failed to set a new image in order to upgrade deployment. We stop here." && exit 1
+    fi
     kubectl rollout status deployment hello-world-deployment
+    if [ $? -gt 0 ] ; then
+        echo -e "\e[31m[ERROR]\e[0m Deployment rollout failed. We stop here." && exit 1
+    fi
     # kubectl rollout undo deployment hello-world-deployment
     echo -e "\e[32m[INFO]\e[0m Listing endpoints, hpa, deploy, service and pods"
     kubectl get endpoints
@@ -71,7 +88,7 @@ elif [ $# -eq 2 ] ; then
     echo -e "\e[32m[INFO]\e[0m Arguments are \e[36m"$@"\e[0m"
     case $1 in
         init) init_env
-              init_deployment
+              init_deployment $2
               exit 0
               ;;
         upgrade) init_env
