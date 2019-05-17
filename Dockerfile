@@ -7,5 +7,7 @@ RUN apt update && apt-get install -y kubectl
 EXPOSE 80 443 22
 ADD appLifecycleMgr.sh /
 ADD config /
+ADD hello-world-deployment.yaml /
+ADD hello-world-service.yaml /
 ENTRYPOINT ["/appLifecycleMgr.sh"]
 CMD []
