@@ -118,3 +118,10 @@ curl 10.104.147.113:30101
 kubectl delete deployment hello-world-deployment
 kubectl delete svc hello-world-service
 kubectl delete horizontalpodautoscalers.autoscaling hello-world-deployment
+===
+===
+No space left on Docker fs
+---
+docker rm $(docker ps -q -f 'status=exited')
+docker rmi $(docker images -q -f "dangling=true")
+docker volume rm $(docker volume ls -qf "dangling=true")

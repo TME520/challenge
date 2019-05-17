@@ -1,8 +1,25 @@
-# challenge
-
+# Challenge
+## Prerequisite
+- You need an Internet connection
+- Docker, Minikube and Kubectl must be installed
+- Minikube must be running
+- Minikube's metrics addon must be enabled
+- The Docker image for the Application Lifecycle Management must have been built (I call it ubuntubase, feel free to pick your own name)
+- Take not of Minikube's IP
 ```
+minikube start
+minikube addons enable metrics-server
 docker build -t ubuntubase .
-docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:192.168.99.101 ubuntubase init d0x2f/http-hello-world:v1.0.0
-docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:192.168.99.101 ubuntubase upgrade d0x2f/http-hello-world:v2.0.0
-less ~/.minikube/tamere
+minikube ip
+```
+## Usage
+### New deployment
+- Run this command from a terminal:
+```
+docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:<minikube-ip> candidate-image init d0x2f/http-hello-world:v1.0.0
+```
+### Upgrade existing deployment
+- Run this command from a terminal:
+```
+docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:<minikube-ip> candidate-image upgrade d0x2f/http-hello-world:v2.0.0
 ```

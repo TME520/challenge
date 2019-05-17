@@ -13,36 +13,37 @@ function syntax() {
 function init_env() {
     echo -e "\e[32m[INFO]\e[0m Preparing the deployment environment"
     echo -e "\e[32m[INFO]\e[0m Copying minikube config"
-    mkdir /minikube_copy
-    cp -pr /root/.minikube/* /minikube_copy/
+    mkdir /minikube_copy && cp -pr /root/.minikube/* /minikube_copy/
+    if [ $? -gt 0 ] ; then
+        echo -e "\e[31m[ERROR]\e[0m Failed to create minikube config. We stop here." && exit 1
+    fi
     echo -e "\e[32m[INFO]\e[0m Creating kube config"
-    mkdir -p $HOME/.kube/
-    mv /config $HOME/.kube/
-    sed -i -e 's/AAAAAAAA/kubernetes/g' $HOME/.kube/config
-    #echo "Pinging kub"
-    #ping -c 3 kubernetes
-    #nc -zvvvt kubernetes 8443
+    mkdir -p $HOME/.kube/ && mv /config $HOME/.kube/ && sed -i -e 's/AAAAAAAA/kubernetes/g' $HOME/.kube/config
+    if [ $? -gt 0 ] ; then
+        echo -e "\e[31m[ERROR]\e[0m Failed to create kubectl config. We stop here." && exit 1
+    fi
     return 0
 }
 
 function init_deployment() {
     echo -e "\e[32m[INFO]\e[0m Initial deployment for Hello World"
     echo -e "\e[32m[INFO]\e[0m Creating deployment YAML file"
-    sed -i -e 's/BBBBBBBB/$1/g' /hello-world-deployment.yaml
+    sed -i -e "s/BBBBBBBB/$1/g" /hello-world-deployment.yaml
     echo -e "\e[32m[INFO]\e[0m Deploying the app"
     kubectl apply -f /hello-world-deployment.yaml
     if [ $? -gt 0 ] ; then
-        echo -e "\e[31m[ERROR]\e[0m Failed to create deployment. We stop here." && exit 1
+        echo -e "\e[31m[ERROR]\e[0m Failed to create deployment. We stop here." && cleanup_the_mess && exit 1
     fi
     kubectl apply -f /hello-world-service.yaml
     if [ $? -gt 0 ] ; then
-        echo -e "\e[31m[ERROR]\e[0m Failed to create service. We stop here." && exit 1
+        echo -e "\e[31m[ERROR]\e[0m Failed to create service. We stop here." && cleanup_the_mess && exit 1
     fi
     kubectl autoscale deployment hello-world-deployment --min=2 --max=4 --cpu-percent=60
     if [ $? -gt 0 ] ; then
-        echo -e "\e[31m[ERROR]\e[0m Failed to create autoscaler. We stop here." && exit 1
+        echo -e "\e[31m[ERROR]\e[0m Failed to create autoscaler. We stop here." && cleanup_the_mess && exit 1
     fi
     echo -e "\e[32m[INFO]\e[0m Listing endpoints, hpa, deploy, service and pods"
+    sleep 4
     kubectl get endpoints
     kubectl get hpa
     kubectl get deploy -o wide
@@ -61,16 +62,24 @@ function upgrade_deployment() {
     fi
     kubectl rollout status deployment hello-world-deployment
     if [ $? -gt 0 ] ; then
-        echo -e "\e[31m[ERROR]\e[0m Deployment rollout failed. We stop here." && exit 1
+        echo -e "\e[31m[ERROR]\e[0m Deployment rollout failed. We rollback, then we stop." && kubectl rollout undo deployment hello-world-deployment && exit 1
     fi
-    # kubectl rollout undo deployment hello-world-deployment
     echo -e "\e[32m[INFO]\e[0m Listing endpoints, hpa, deploy, service and pods"
+    sleep 4
     kubectl get endpoints
     kubectl get hpa
     kubectl get deploy -o wide
     kubectl get svc -o wide
     kubectl get pod -o wide
     echo -e "\e[32m[INFO]\e[0m Deployment is done. Exiting."
+    return 0
+}
+
+function cleanup_the_mess() {
+    echo -e "\e[32m[INFO]\e[0m Cleaning up..."
+    kubectl delete deployment hello-world-deployment
+    kubectl delete svc hello-world-service
+    kubectl delete horizontalpodautoscalers.autoscaling hello-world-deployment
     return 0
 }
 
