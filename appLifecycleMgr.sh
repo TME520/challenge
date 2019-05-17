@@ -10,8 +10,8 @@ function syntax() {
     return 0
 }
 
-function init_deployment() {
-    echo -e "\e[32m[INFO]\e[0m Initial deployment for Hello World"
+function init_env() {
+    echo -e "\e[32m[INFO]\e[0m Preparing the deployment environment"
     echo -e "\e[32m[INFO]\e[0m Copying minikube config"
     mkdir /minikube_copy
     cp -pr /root/.minikube/* /minikube_copy/
@@ -22,10 +22,31 @@ function init_deployment() {
     #echo "Pinging kub"
     #ping -c 3 kubernetes
     #nc -zvvvt kubernetes 8443
+    return 0
+}
+
+function init_deployment() {
+    echo -e "\e[32m[INFO]\e[0m Initial deployment for Hello World"
     echo -e "\e[32m[INFO]\e[0m Deploying the app"
     kubectl apply -f /hello-world-deployment.yaml
     kubectl apply -f /hello-world-service.yaml
     kubectl autoscale deployment hello-world-deployment --min=2 --max=4 --cpu-percent=60
+    echo -e "\e[32m[INFO]\e[0m Listing endpoints, hpa, deploy, service and pods"
+    kubectl get endpoints
+    kubectl get hpa
+    kubectl get deploy -o wide
+    kubectl get svc -o wide
+    kubectl get pod -o wide
+    echo -e "\e[32m[INFO]\e[0m Deployment is done. Exiting."
+    return 0
+}
+
+function upgrade_deployment() {
+    echo -e "\e[32m[INFO]\e[0m Upgrading deployment for Hello World"
+    echo -e "\e[32m[INFO]\e[0m Upgrading to \e[36m"$1"\e[0m"
+    kubectl set image deployment hello-world-deployment hello-world=$1
+    kubectl rollout status deployment hello-world-deployment
+    # kubectl rollout undo deployment hello-world-deployment
     echo -e "\e[32m[INFO]\e[0m Listing endpoints, hpa, deploy, service and pods"
     kubectl get endpoints
     kubectl get hpa
@@ -47,12 +68,14 @@ elif [ $# -eq 1 ] ; then
     syntax
     exit 1
 elif [ $# -eq 2 ] ; then
-    echo -e "\e[32m[INFO]\e[0m Arguments are "$@
+    echo -e "\e[32m[INFO]\e[0m Arguments are \e[36m"$@"\e[0m"
     case $1 in
-        init) init_deployment
+        init) init_env
+              init_deployment
               exit 0
               ;;
-        upgrade) upgrade_deployment
+        upgrade) init_env
+                 upgrade_deployment $2
                  exit 0
                  ;;
         *) echo -e "\e[31m[ERROR]\e[0m Unknown operation name. We stop here."
