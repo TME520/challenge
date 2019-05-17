@@ -2,9 +2,9 @@
 
 function syntax() {
     # Help user figure out what he/she did wrong while invoking ALM
-    echo -e "\n\Application Lifecycle Manager"
-    echo -e "\n\n\e[32mSyntax:\e[0m\n\ndocker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:<minikube cluster ip> <ALM image name> <init | upgrade> <Hello World image name>"
-    echo -e "\n\e[32mExamples:\e[0m\n"
+    echo -e "\n\e[36mApplication Lifecycle Manager\e[0m"
+    echo -e "\n\e[32mSyntax:\e[0m\n\ndocker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:<minikube cluster ip> <ALM image name> <init | upgrade> <Hello World image name>"
+    echo -e "\n\e[32mExamples:\e[0m"
     echo "docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:192.168.99.101 ubuntubase init d0x2f/http-hello-world:v1.0.0"
     echo "docker run -v ~/.minikube:/root/.minikube --add-host=kubernetes:192.168.99.100 ubuntubase upgrade d0x2f/http-hello-world:v2.0.0"
     return 0
