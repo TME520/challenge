@@ -32,5 +32,5 @@ kubectl get svc
 - Connect to the cluster and run cURL from there:
 ```
 minikube ssh
-
+curl <hello world service IP>:30101
 ```
